@@ -518,6 +518,7 @@ MonoBehaviour:
   bloodyPlantedTile: {fileID: 11400000, guid: a8a53115c3caba94e9d76e075979a6c4, type: 2}
   isBloody: 0
   canKill: 0
+  hasKilled: 0
   knifeDefault: {fileID: 21300000, guid: 5ef49c99070d68142a2b45ea9708f585, type: 3}
   knifeBloody: {fileID: 21300000, guid: 13d6cddb89d60b241b04611cc81f0574, type: 3}
 --- !u!212 &204474671

@@ -16,6 +16,7 @@ public class Knife : Tool {
     private SpriteRenderer sr;
     public bool isBloody = false;  
     public bool canKill = false;
+    public bool hasKilled;
 
     private PlayerTools playerTools;
 
@@ -132,28 +133,33 @@ public class Knife : Tool {
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.CompareTag("Flob")) {
-            knifeCollider.enabled = false;
-            isBloody = true;
-            sr.sprite = knifeBloody;
-            GameflowManager.Instance.kills++;
-            GameObject flob = collision.gameObject;
-            Destroy(flob.GetComponent<Rigidbody2D>());
-            Destroy(flob.GetComponent<Collider2D>());
+        if (hasKilled) return;
 
-            flob.transform.parent = playerTools.toolHolder;
-            flob.transform.localPosition = new Vector3(-1.3f, -1.2f, 0);
-             
-            var corpseTool = flob.AddComponent<CorpseTool>();
-            SpriteRenderer[] flobRenderers = flob.GetComponentsInChildren<SpriteRenderer>();
-            //foreach (var renderer in flobRenderers) {
-            //    renderer.sortingLayerName = "Tools";
-            //}
-            playerTools.corpsePickedUp = flob;
-            playerTools.tools[(int)Tools.Corpse] = corpseTool;
-            FindObjectOfType<FlobSpawner>().spawnedFlobs.Remove(flob);
-            Destroy(flob.GetComponent<FlobCitizen>(), 0.2f);
-            pendingCorpseChange = true;
+        if (collision.CompareTag("Flob")) {
+            if (transform.GetComponentInChildren<CorpseTool>() == null) {
+                hasKilled = true;
+                knifeCollider.enabled = false;
+                isBloody = true;
+                sr.sprite = knifeBloody;
+                GameflowManager.Instance.kills++;
+                GameObject flob = collision.gameObject;
+                Destroy(flob.GetComponent<Rigidbody2D>());
+                Destroy(flob.GetComponent<Collider2D>());
+
+                flob.transform.parent = playerTools.toolHolder;
+                flob.transform.localPosition = new Vector3(-1.3f, -1.2f, 0);
+
+                var corpseTool = flob.AddComponent<CorpseTool>();
+                SpriteRenderer[] flobRenderers = flob.GetComponentsInChildren<SpriteRenderer>();
+                //foreach (var renderer in flobRenderers) {
+                //    renderer.sortingLayerName = "Tools";
+                //}
+                playerTools.corpsePickedUp = flob;
+                playerTools.tools[(int)Tools.Corpse] = corpseTool;
+                FindObjectOfType<FlobSpawner>().spawnedFlobs.Remove(flob);
+                Destroy(flob.GetComponent<FlobCitizen>(), 0.2f);
+                pendingCorpseChange = true;
+            }
         }
     }
 
@@ -168,6 +174,7 @@ public class Knife : Tool {
         if (pendingCorpseChange) {
             playerTools.SetTool(Tools.Corpse);
             pendingCorpseChange = false;
+            hasKilled = false;
         }
     }
 }

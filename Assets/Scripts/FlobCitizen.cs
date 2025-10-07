@@ -110,7 +110,9 @@ public class FlobCitizen : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.CompareTag("Knife")) {
-            SetState(State.Dead);
+            if (!collision.GetComponent<Knife>().hasKilled) {
+                SetState(State.Dead);
+            }
         }
     }
 
